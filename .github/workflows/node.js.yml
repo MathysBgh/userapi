@@ -1,7 +1,8 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+# Ce flux de travail effectuera une installation propre des dépendances de node, les mettra en cache/les restaurera, 
+# construira le code source et exécutera les tests sur différentes versions de node.
+# Pour plus d'informations, consultez : https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Node.js CI avec Redis
 
 on:
   push:
@@ -11,17 +12,24 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
 
     strategy:
       matrix:
         node-version: [14.x, 16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        # Voir le calendrier des versions Node.js supportées sur https://nodejs.org/en/about/releases/
+
+    # Définition du service Redis
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: --save ""
 
     steps:
     - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
+    - name: Utiliser Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
